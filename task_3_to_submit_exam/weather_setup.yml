@@ -1,0 +1,58 @@
+---
+- name: Configure Weather (CGI) Web Application
+  hosts: localhost  # We are running Ansible locally on the VM
+  become: true
+  vars:
+    var_domain: localhost.weather
+
+  tasks:
+    - name: Install Apache HTTP Server
+      apt:
+        name: apache2
+        state: present
+
+    - name: Enable mod_cgid
+      apache2_module:
+        name: cgid
+        state: present
+      notify:
+        - Restart Apache
+
+    - name: Create Document Root Directory
+      file:
+        path: "/var/www/{{ var_domain }}/html"
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: 0755
+
+    - name: Create CGI Directory
+      file:
+        path: "/var/www/{{ var_domain }}/cgi-bin"
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: 0755
+
+    - name: Configure Virtual Host
+      template:
+        src: templates/virtual_host.conf.j2  # You need to create this template file
+        dest: "/etc/apache2/sites-available/{{ var_domain }}.conf"
+      notify:
+        - Restart Apache
+
+    - name: Enable Virtual Host
+      apache2_module:
+        name: "{{ var_domain }}"
+        state: present
+      notify:
+        - Restart Apache
+
+    - name: Reload Apache
+      meta: flush_handlers
+
+  handlers:
+    - name: Restart Apache
+      service:
+        name: apache2
+        state: restarted

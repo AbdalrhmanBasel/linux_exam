@@ -1,0 +1,23 @@
+<VirtualHost *:80>
+    ServerAdmin webmaster@{{ var_domain }}
+    ServerName {{ var_domain }}
+    ServerAlias www.{{ var_domain }} site.{{ var_domain }}
+    DocumentRoot /var/www/{{ var_domain }}/html
+    ErrorLog ${APACHE_LOG_DIR}/{{ var_domain }}-error.log
+    CustomLog ${APACHE_LOG_DIR}/{{ var_domain }}-access.log combined
+
+    <Directory "/var/www/{{ var_domain }}/html">
+        Options Indexes FollowSymLinks
+        AllowOverride None
+        Require all granted
+    </Directory>
+
+    ScriptAlias /cgi-bin/ /var/www/{{ var_domain }}/cgi-bin/
+    <Directory "/var/www/{{ var_domain }}/cgi-bin">
+        AllowOverride None
+        Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+        Require all granted
+    </Directory>
+
+</VirtualHost>
+

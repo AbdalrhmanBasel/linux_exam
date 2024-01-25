@@ -1,0 +1,28 @@
+<!-- weather/templates/index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Current Weather</title>
+</head>
+<body>
+<h1>Request Current Weather for City</h1>
+<form method="post" action="{% url 'current_weather' %}">
+    {% csrf_token %}
+    <p><label>City: <input type="text" name="city"></label></p>
+    <fieldset>
+        <legend>Select Measurement Unit:</legend>
+        <input type="radio" name="unit" value="metric" id="radio1" checked>
+        <label for="radio1">Celsius (°C)</label>
+        <input type="radio" name="unit" value="standard" id="radio2">
+        <label for="radio2">Kelvin (K)</label>
+        <input type="radio" name="unit" value="imperial" id="radio3">
+        <label for="radio3">Fahrenheit (°F)</label>
+    </fieldset>
+    <p>
+        <input type="submit" value="Submit">
+        <input type="reset" value="Clear">
+    </p>
+</form>
+</body>
+</html>
